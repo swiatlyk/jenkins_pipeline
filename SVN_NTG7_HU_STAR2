@@ -1,0 +1,91 @@
+//initiating groovy script, name can be any
+def gv
+
+//defining whole pipeline
+pipeline {
+  agent {
+     node {
+       //passed as parameter from "Node and Label parameter" plugin
+       label "${REQ_NODE}"
+       //customWorkspace '/some/other/path'
+     }
+  }
+  //adding/editing environment variables
+  environment {
+    SOURCE="${WORKSPACE}"
+    DESTINATION="${NODE_SHARE}\\${BUILD_TAG}"
+    REQ_NODE="${REQ_NODE}"
+}
+  //adding/editing environment variables
+  parameters {
+        string(name: 'SVNBRANCH', defaultValue: 'develop@23688', description: 'vcpu_source version to checkout from svn.')
+        string(name: 'GITBRANCH', defaultValue: 'VCPU_23688', description: 'Git branch (tag, sha) to checkout files required for test.')
+        choice(name: 'VCPU_Repository', choices: ["vcpu_ntg7_hu_star2_source", "any_other_option"], description: 'SVN repo to use')
+        string(name: 'TESTTORUN', defaultValue: '--base=mandatory', description: 'Add here wchih test should be performed.')
+        string(name: 'USERFILES', defaultValue: 'D:\\Krzysiek', description: 'Add path to user files on node where you run job.')
+        //booleanParam(name: 'RSU present', defaultValue: true, description: 'Is RSU present on bench')
+        //password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    }
+  stages {
+    //Mandatory stage to load script and prepare DESTINATION (D:\Share\Build_tag) folder
+    stage("Preparing environment") {
+      steps {
+        script {
+          gv = load "script.groovy"
+          bat ("mkdir %DESTINATION%")
+        }
+      }
+    }
+    stage("Checkout_smokefiles and copy to destination") {
+      steps {
+        script {
+          gv.checkoutSmokeFiles()
+          gv.copySourceDestination()
+        }
+      }
+    }
+
+    stage("Run_vcpuupdate_and_smoketests") {
+      parallel {
+        stage("Run vcpupdate") {
+          steps {
+            echo "Start flashing vcpu"
+            script {
+              gv.vcpupdate()
+            }
+          }
+        }
+
+        stage("Run smoketest app") {
+          steps {
+            echo "Start of automated tests"
+            script {
+              gv.smoketests_exe()
+            }
+          }
+        }
+
+      }
+    }
+  }
+  post { 
+    always { 
+      echo "I will always run regardless of the completion status of the Pipeline’s or stage’s run."
+      echo "Send email"
+      echo("Cleaning the dir")
+      cleanWs()
+    }
+    failure {
+      echo "I will when job will failure"
+      echo "Send email"
+      echo("Cleaning the dir")
+      cleanWs()
+    }
+    success {
+      echo "I will run when job is success"
+      echo "Send email"
+      echo("Cleaning the dir")
+      cleanWs()
+    }
+  }
+}
