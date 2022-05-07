@@ -1,15 +1,15 @@
-def checkoutSmokeFiles() {
-    git credentialsId: 'SvccpmdaiVeh_ssh', url: 'ssh://git@stash1.harman.com:7999/n6h_automation/smokefiles.git'
+def checkoutApplication() {
+    git credentialsId: 'id_of_stored_credential_in_jenkins_server', url: 'ssh://git@address_of_the_repository/name_of_repository.git'
 }
 
-def vcpupdate() {
+def precondition() {
     echo "Starting VCPUpdate"
     sleep(2)
     //code logic here
 }
 
-def smoketests_exe() {
-    echo "Starting SmokeTests.exe with parameters"
+def application_exe() {
+    echo "Starting application.exe with parameters"
     sleep(2)
     //code logic here
 }
@@ -32,16 +32,14 @@ def copySourceDestination(){
     goto END
     
     :EMPTYS
-    echo prod_copy_smokefiles=1 >> flags.txt
     echo "Empty source folder!"
     exit /b 11
     
     :EMPTYD
-    echo prod_copy_smokefiles=1 >> flags.txt
     echo "Empty destination folder!"
     exit /b 11
     
     :END
-    echo prod_copy_smokefiles=0 >> flags.'''
+    echo "End of file"'''
 }
 return this

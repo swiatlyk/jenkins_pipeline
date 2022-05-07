@@ -18,13 +18,16 @@ pipeline {
 }
   //adding/editing environment variables
   parameters {
-        string(name: 'SVNBRANCH', defaultValue: 'develop@23688', description: 'vcpu_source version to checkout from svn.')
-        string(name: 'GITBRANCH', defaultValue: 'VCPU_23688', description: 'Git branch (tag, sha) to checkout files required for test.')
-        choice(name: 'VCPU_Repository', choices: ["vcpu_ntg7_hu_star2_source", "any_other_option"], description: 'SVN repo to use')
-        string(name: 'TESTTORUN', defaultValue: '--base=mandatory', description: 'Add here wchih test should be performed.')
-        string(name: 'USERFILES', defaultValue: 'D:\\Krzysiek', description: 'Add path to user files on node where you run job.')
-        //booleanParam(name: 'RSU present', defaultValue: true, description: 'Is RSU present on bench')
+        //string(name: 'NAME', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+
+        //text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+        booleanParam(name: 'Parameter present', defaultValue: true, description: 'Is Parameter present on bench')
+
+        choice(name: 'Version_to_build', choices: ["1.20", "1.30", "1.40"], description: 'Pick version')
+
         //password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+	}
     }
   stages {
     //Mandatory stage to load script and prepare DESTINATION (D:\Share\Build_tag) folder
@@ -36,31 +39,31 @@ pipeline {
         }
       }
     }
-    stage("Checkout_smokefiles and copy to destination") {
+    stage("Checkout_application and copy to destination") {
       steps {
         script {
-          gv.checkoutSmokeFiles()
+          gv.checkoutApplication()
           gv.copySourceDestination()
         }
       }
     }
 
-    stage("Run_vcpuupdate_and_smoketests") {
+    stage("Run_precondition_and_application") {
       parallel {
-        stage("Run vcpupdate") {
+        stage("Run precondition") {
           steps {
-            echo "Start flashing vcpu"
+            echo "Start precondition"
             script {
-              gv.vcpupdate()
+              gv.precondition()
             }
           }
         }
 
-        stage("Run smoketest app") {
+        stage("Run application app") {
           steps {
             echo "Start of automated tests"
             script {
-              gv.smoketests_exe()
+              gv.application_exe()
             }
           }
         }
