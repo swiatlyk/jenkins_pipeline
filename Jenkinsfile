@@ -5,7 +5,7 @@ def gv
 pipeline {
   agent {
     node {
-      label 'HILDZL151807'
+      label 'name_of_node'
       //customWorkspace '/some/other/path'
     }
   }
@@ -19,7 +19,7 @@ pipeline {
 
         //text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
 
-        booleanParam(name: 'RSU present', defaultValue: true, description: 'Is RSU present on bench')
+        booleanParam(name: 'Parameter present', defaultValue: true, description: 'Is Parameter present on bench')
 
         choice(name: 'Version_to_build', choices: ["1.20", "1.30", "1.40"], description: 'Pick version')
 
