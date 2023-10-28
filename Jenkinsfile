@@ -5,7 +5,7 @@ def gv
 pipeline {
   agent {
     node {
-      label 'name_of_node'
+      label 'jenkins_server'
       //customWorkspace '/some/other/path'
     }
   }
