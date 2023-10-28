@@ -41,7 +41,7 @@ pipeline {
         echo "====++++Try to load groovy script++++===="
         //using script by method in script
         script {
-          gv.buildApp()
+          gv.application_exe()
         }
       }
     }
@@ -52,7 +52,7 @@ pipeline {
           steps {
             echo 'Starting deploying app'
             script {
-              gv.deployApp()
+              gv.application_exe()
             }
           }
         }
@@ -61,7 +61,7 @@ pipeline {
           steps {
             echo 'Copying files of app'
             script {
-              gv.copyFilesToProd()
+              gv.application_exe()
             }
           }
         }

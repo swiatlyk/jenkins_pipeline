@@ -1,16 +1,16 @@
 def checkoutApplication() {
-    git credentialsId: 'token for jenkins test buil', url: 'https://github.com/swiatlyk/jenkins_pipeline.git'
+    git credentialsId: 'id_of_stored_credential_in_jenkins_server', url: 'ssh://git@address_of_the_repository/name_of_repository.git'
 }
 
 def precondition() {
     echo "Starting VCPUpdate"
-    sleep(2)
+    sleep(1)
     //code logic here
 }
 
 def application_exe() {
     echo "Starting application.exe with parameters"
-    sleep(2)
+    sleep(1)
     //code logic here
 }
 
